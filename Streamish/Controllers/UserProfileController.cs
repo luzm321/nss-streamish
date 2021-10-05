@@ -30,12 +30,24 @@ namespace Streamish.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var video = _userProfileRepository.GetById(id);
-            if (video == null)
+            var userProfile = _userProfileRepository.GetById(id);
+            if (userProfile == null)
             {
                 return NotFound();
             }
-            return Ok(video);
+            return Ok(userProfile);
+        }
+
+        // https://localhost:5001/api/userprofile/getwithvideos/id
+        [HttpGet("GetWithVideos/{id}")]
+        public IActionResult GetWithVideos(int id)
+        {
+            var userProfile = _userProfileRepository.GetByIdWithVideos(id);
+            if (userProfile == null)
+            {
+                return NotFound();
+            }
+            return Ok(userProfile);
         }
 
         // https://localhost:5001/api/userprofile/

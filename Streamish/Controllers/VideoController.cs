@@ -43,6 +43,18 @@ namespace Streamish.Controllers
             return Ok(video);
         }
 
+        //https://localhost:5001/api/video/id/getvideobyidwithcomments
+        [HttpGet("{id}/GetVideoByIdWithComments")]
+        public IActionResult GetVideoByIdWithComments(int id)
+        {
+            var video = _videoRepository.GetVideoByIdWithComments(id);
+            if (video == null)
+            {
+                return StatusCode(404);
+            }
+            return Ok(video);
+        }
+
         // https://localhost:5001/api/video/
         [HttpPost]
         public IActionResult Post(Video video)

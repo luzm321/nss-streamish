@@ -10,7 +10,6 @@ namespace Streamish.Repositories
 {
     public class UserProfileRepository : BaseRepository, IUserProfileRepository
     {
-
         public UserProfileRepository(IConfiguration configuration) : base(configuration) { }
 
         public List<UserProfile> GetAll()
@@ -92,10 +91,15 @@ namespace Streamish.Repositories
                 {
                     cmd.CommandText = @"
                           SELECT up.Id, up.[Name], up.Email, up.ImageUrl, up.DateCreated,
-                                 v.Id [VideoId], v.Title, v.Description, v.Url, v.DateCreated [VideoDateCreated]
+                                 v.Id [VideoId], v.Title, v.Description, v.Url, v.DateCreated [VideoDateCreated],
+                                 c.Id [CommentId], c.Message, c.UserProfileId [CommentUserProfileId], cup.[Name] [Commenter Name]
                           FROM UserProfile up
                           LEFT JOIN Video v
                           ON up.Id = v.UserProfileId
+                          LEFT JOIN Comment c
+                          ON v.Id = c.VideoId
+                          LEFT JOIN UserProfile cup
+                          ON c.UserProfileId = cup.Id
                           WHERE up.Id = @id";
 
                     DbUtils.AddParameter(cmd, "@id", id);
@@ -120,15 +124,41 @@ namespace Streamish.Repositories
 
                         if (DbUtils.IsNotDbNull(reader, "VideoId"))
                         {
-                            userProfile.Videos.Add(new Video
+                            var video = userProfile.Videos.FirstOrDefault(video => video.Id == DbUtils.GetInt(reader, "VideoId"));
+
+                            if (video == null)
                             {
-                                Id = DbUtils.GetInt(reader, "VideoId"),
-                                Title = DbUtils.GetString(reader, "Title"),
-                                Description = DbUtils.GetString(reader, "Description"),
-                                Url = DbUtils.GetString(reader, "Url"),
-                                DateCreated = DbUtils.GetDateTime(reader, "VideoDateCreated"),
-                            });
-                        }
+                                video = new Video
+                                {
+                                    Id = DbUtils.GetInt(reader, "VideoId"),
+                                    Title = DbUtils.GetString(reader, "Title"),
+                                    Description = DbUtils.GetString(reader, "Description"),
+                                    Url = DbUtils.GetString(reader, "Url"),
+                                    DateCreated = DbUtils.GetDateTime(reader, "VideoDateCreated"),
+                                    Comments = new List<Comment>()
+                                };
+
+                                userProfile.Videos.Add(video);
+                            }
+
+                            if (DbUtils.IsNotDbNull(reader, "CommentId"))
+                            {
+                                video.Comments.Add(new Comment
+                                {
+                                    Id = DbUtils.GetInt(reader, "CommentId"),
+                                    Message = DbUtils.GetString(reader, "Message"),
+                                    VideoId = video.Id,
+                                    UserProfileId = DbUtils.GetInt(reader, "CommentUserProfileId"),
+                                    UserProfile = new UserProfile()
+                                    {
+                                        Id = DbUtils.GetInt(reader, "CommentUserProfileId"),
+                                        Name = DbUtils.GetString(reader, "Commenter Name"),
+                                        Email = DbUtils.GetString(reader, "Email"),
+                                        ImageUrl = DbUtils.GetString(reader, "ImageUrl")
+                                    }
+                                });
+                            }
+                        }                       
                     }
                     //reader.Close();
                     return userProfile;
@@ -136,7 +166,6 @@ namespace Streamish.Repositories
             }
         }
     
-
         public void Add(UserProfile userProfile)
         {
             using (var conn = Connection)

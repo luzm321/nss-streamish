@@ -50,7 +50,8 @@ namespace Streamish.Controllers
             var video = _videoRepository.GetVideoByIdWithComments(id);
             if (video == null)
             {
-                return StatusCode(404);
+                //return StatusCode(404);
+                return NotFound();
             }
             return Ok(video);
         }

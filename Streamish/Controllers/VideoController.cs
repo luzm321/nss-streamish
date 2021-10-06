@@ -64,6 +64,13 @@ namespace Streamish.Controllers
             return Ok(_videoRepository.Search(q, sortDesc));
         }
 
+        //https://localhost:5001/api/video/hottest?since=<SOME_DATE> 
+        [HttpGet("hottest")]
+        public IActionResult HottestVideos(DateTime since, bool sortDesc)
+        {
+            return Ok(_videoRepository.GetHottestVideos(since, sortDesc));
+        }
+
 
         // https://localhost:5001/api/video/
         [HttpPost]

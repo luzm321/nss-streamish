@@ -55,6 +55,16 @@ namespace Streamish.Controllers
             return Ok(video);
         }
 
+        //https://localhost:5001/api/video/search?q=e&sortDesc=false
+        // URL's route contains search and the URL's query string has values for q and sortDesc keys. search corresponds to the the argument
+        // passed to the [HttpGet("search")] attribute, and q and sortDesc correspond to the method's parameters.
+        [HttpGet("search")]
+        public IActionResult Search(string q, bool sortDesc)
+        {
+            return Ok(_videoRepository.Search(q, sortDesc));
+        }
+
+
         // https://localhost:5001/api/video/
         [HttpPost]
         public IActionResult Post(Video video)

@@ -74,7 +74,8 @@ namespace Streamish.Tests.Mocks
 
         public List<Video> Search(string criterion, bool sortDescending)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return _data;
         }
 
         public List<Video> GetAllWithComments()
@@ -91,7 +92,8 @@ namespace Streamish.Tests.Mocks
 
         public List<Video> GetHottestVideos(DateTime since, bool sortDescending)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return _data;
         }
     }
 }

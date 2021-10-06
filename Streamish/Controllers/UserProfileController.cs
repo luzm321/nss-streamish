@@ -27,6 +27,10 @@ namespace Streamish.Controllers
         }
 
         // https://localhost:5001/api/userprofile/id
+        // Route parameters enable the ability to pass in data on the URL, such as the id parameter with integer value:
+        // The route parameters are specified in the HTTP verb attribute (ex. [HttpGet("{id}")])
+        // and in the method parameters (ex. public IActionResult Get(int id))
+        // Route parameters are not limited to ids and can get significantly more complex if the need arises.
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {

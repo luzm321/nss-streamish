@@ -15,5 +15,6 @@ namespace Streamish.Repositories
         void Add(Video video);
         void Update(Video video);
         void Delete(int id);
+        List<Video> Search(string criterion, bool sortDescending);
     }
 }

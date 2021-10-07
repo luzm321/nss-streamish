@@ -8,7 +8,17 @@ export const getAllVideos = () => {
 export const getAllVideosWithComments = () => {
     return fetch(`${baseUrl}/getwithcomments`)
       .then((res) => res.json())
-  };
+};
+
+// export const searchVideos = (videoSearchTerm, sortDesc) => {
+//     return fetch(`${baseUrl}/search?q=${videoSearchTerm}&sortDesc=${sortDesc}`)
+//       .then((res) => res.json())
+// };
+
+export const searchVideos = (videoSearchTerm) => {
+    return fetch(`${baseUrl}/search?q=${videoSearchTerm}&sortDesc=false`)
+      .then((res) => res.json());
+};
 
 export const addVideo = (video) => {
   return fetch(baseUrl, {
@@ -17,5 +27,5 @@ export const addVideo = (video) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(video),
-  });
+    });
 };

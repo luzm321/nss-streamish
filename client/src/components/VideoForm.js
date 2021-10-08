@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { useHistory } from "react-router-dom";
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { addVideo } from "../modules/videoManager";
 
@@ -10,16 +11,19 @@ const VideoForm = ({getVideosWithComments}) => {
         description: ""
     });
 
+    const history = useHistory();
+
     // method that handles adding a new video by invoking
     const handleAddNewVideo = () => {
         addVideo(videoToAdd).then(() => {
-            getVideosWithComments()
+            // getVideosWithComments()
             // resetting state back to initial state to clear input for fields:
             setVideoToAdd({
                 title: "",
                 url: "",
                 description: ""
             });
+            history.push("/");
         });
     };
 

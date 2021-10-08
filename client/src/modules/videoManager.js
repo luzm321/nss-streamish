@@ -16,6 +16,7 @@ export const getAllVideosWithComments = () => {
 // };
 
 export const searchVideos = (videoSearchTerm) => {
+    console.log('searching?')
     return fetch(`${baseUrl}/search?q=${videoSearchTerm}&sortDesc=false`)
       .then((res) => res.json());
 };

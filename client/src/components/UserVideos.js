@@ -5,12 +5,12 @@ import Video from "./Video";
 import { getVideosByUser } from "../modules/videoManager";
 
 const UserVideos = () => {
-  const [videoList, setVideo] = useState([]);
+  const [videoList, setVideoList] = useState([]);
   const { id } = useParams();
 
   useEffect(() => {
     // console.log('is this triggering');
-    getVideosByUser(parseInt(id)).then(setVideo);
+    getVideosByUser(parseInt(id)).then(setVideoList);
     // getVideosByUser(parseInt(id)).then((data) => console.log("data", data));
 
   }, []);

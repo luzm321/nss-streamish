@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-// import { Button } from "reactstrap";
+import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import { addVideo } from "../modules/videoManager";
 
 const VideoForm = ({getVideosWithComments}) => {
@@ -36,14 +36,14 @@ const VideoForm = ({getVideosWithComments}) => {
         <div className="row videoFormContainer">
             <h3>~Add A New Video~</h3>
             <div className="videoForm">
-                <label>Title:</label><br/>
+                <br/><Label>Title:</Label><br/><br/>
                 <input id="title" type="text" defaultValue={videoToAdd.title} value={videoToAdd.title} onChange={(event) => {handleInputChange(event)}} placeholder="video title..." required />
-                <br/><label>Url:</label><br/>
+                <br/><br/><Label>Url:</Label><br/><br/>
                 <input id="url" type="text" defaultValue={videoToAdd.url} value={videoToAdd.url} onChange={(event) => {handleInputChange(event)}} placeholder="video url..." required />
-                <br/><label>Description (optional):</label><br/>
+                <br/><br/><Label>Description (optional):</Label><br/><br/>
                 <input id="description" type="text" defaultValue={videoToAdd.description} value={videoToAdd.description} onChange={(event) => {handleInputChange(event)}} placeholder="video description..." />
-                <br/><br/><input type="button" value ="Add New Video" onClick={() => {handleAddNewVideo()}}/>
-                {/* <br/><br/><Button value ="Add New Video" onClick={() => {handleAddNewVideo()}}/> */}
+                {/* <br/><br/><input type="button" value ="Add New Video" onClick={() => {handleAddNewVideo()}}/> */}
+                <br/><br/><Button className="btn btn-primary" value ="Add New Video" onClick={() => {handleAddNewVideo()}}>Add New Video</Button><br/><br/>
             </div>
         </div>
     );

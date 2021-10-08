@@ -28,7 +28,7 @@ const VideoList = () => {
                 <VideoSearch setVideos={setVideos}/>
             </div>
         </div>
-        <br/>
+        <br/><br/>
         <div className="container">
             <div className="row justify-content-center">
                 <VideoForm getVideosWithComments={getVideosWithComments}/>

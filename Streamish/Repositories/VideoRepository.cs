@@ -139,6 +139,90 @@ namespace Streamish.Repositories
             }
         }
 
+        // Get Video(s) by UserProfileId:
+        public List<Video> GetVideosByUserProfileId(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                          SELECT v.Id AS VideoId, v.Title, v.Description, v.Url, v.DateCreated, v.UserProfileId,
+                                 up.Name, up.Email, up.ImageUrl [UserProfileImageUrl], up.DateCreated [UserProfileDateCreated],
+                                 c.Id [CommentId], c.Message, c.UserProfileId [CommentUserProfileId],
+                                 cup.Name [Commenter Name]
+                          FROM Video v
+                          INNER JOIN UserProfile up
+                          ON v.UserProfileId = up.Id
+                          LEFT JOIN Comment c
+                          ON v.Id = c.VideoId
+                          LEFT JOIN UserProfile cup
+                          ON c.UserProfileId = cup.Id
+                          WHERE v.UserProfileId = @Id
+                          ORDER BY  v.DateCreated";
+
+                    DbUtils.AddParameter(cmd, "@Id", id);
+
+                    var reader = cmd.ExecuteReader();
+
+                    var videos = new List<Video>();
+                    while (reader.Read())
+                    {
+                        var videoId = DbUtils.GetInt(reader, "VideoId");
+
+                        var existingVideo = videos.FirstOrDefault(p => p.Id == videoId);
+
+                        if (existingVideo == null)
+                        {
+                            existingVideo = new Video()
+                            {
+                                Id = id,
+                                Title = DbUtils.GetString(reader, "Title"),
+                                Description = DbUtils.GetString(reader, "Description"),
+                                DateCreated = DbUtils.GetDateTime(reader, "DateCreated"),
+                                Url = DbUtils.GetString(reader, "Url"),
+                                UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
+                                UserProfile = new UserProfile()
+                                {
+                                    Id = DbUtils.GetInt(reader, "UserProfileId"),
+                                    Name = DbUtils.GetString(reader, "Name"),
+                                    Email = DbUtils.GetString(reader, "Email"),
+                                    DateCreated = DbUtils.GetDateTime(reader, "UserProfileDateCreated"),
+                                    ImageUrl = DbUtils.GetString(reader, "UserProfileImageUrl"),
+                                },
+                                Comments = new List<Comment>()
+                            };
+
+                            videos.Add(existingVideo);
+                        }
+
+                        if (DbUtils.IsNotDbNull(reader, "CommentId"))
+                        {
+                            existingVideo.Comments.Add(new Comment()
+                            {
+                                Id = DbUtils.GetInt(reader, "CommentId"),
+                                Message = DbUtils.GetString(reader, "Message"),
+                                VideoId = videoId,
+                                UserProfileId = DbUtils.GetInt(reader, "CommentUserProfileId"),
+                                UserProfile = new UserProfile()
+                                {
+                                    Id = DbUtils.GetInt(reader, "CommentUserProfileId"),
+                                    Name = DbUtils.GetString(reader, "Commenter Name"),
+                                    Email = DbUtils.GetString(reader, "Email"),
+                                    ImageUrl = DbUtils.GetString(reader, "UserProfileImageUrl")
+                                }
+                            });
+                        }
+                    }
+
+                    reader.Close();
+
+                    return videos;
+                }
+            }
+        }
+
         // Get Video by Id also now with comments:
         public Video GetById(int id)
         {

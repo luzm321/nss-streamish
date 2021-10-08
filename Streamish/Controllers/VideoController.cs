@@ -30,6 +30,18 @@ namespace Streamish.Controllers
             return Ok(videos);
         }
 
+        //https://localhost:5001/api/video/users/id
+        [HttpGet("Users/{id}")]
+        public IActionResult GetUserVideos(int id)
+        {
+            var videos = _videoRepository.GetVideosByUserProfileId(id);
+            if (videos == null)
+            {
+                return StatusCode(404);
+            }
+            return Ok(videos);
+        }
+
 
         // https://localhost:5001/api/video/id
         [HttpGet("{id}")]

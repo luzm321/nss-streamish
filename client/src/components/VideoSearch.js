@@ -11,7 +11,7 @@ const VideoSearch = ({setVideos}) => {
     return (
         <div className="searchDiv">
             <div className="searchBar">
-                <div className="search">Search Video:
+                <div className="search"><strong>Search Video:</strong>
                     <img className="searchIcon" src="https://img.icons8.com/ultraviolet/48/4a90e2/search--v1.png" alt="search icon"/>
                 </div>
                 <input type="text"

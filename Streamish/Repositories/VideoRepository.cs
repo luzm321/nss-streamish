@@ -139,7 +139,7 @@ namespace Streamish.Repositories
             }
         }
 
-        // Get Video by Id without comments:
+        // Get Video by Id also now with comments:
         public Video GetById(int id)
         {
             using (var conn = Connection)
@@ -149,36 +149,65 @@ namespace Streamish.Repositories
                 {
                     cmd.CommandText = @"
                           SELECT v.Id, v.Title, v.Description, v.Url, v.DateCreated, v.UserProfileId,
-                                 up.Name, up.Email, up.ImageUrl [UserProfileImageUrl], up.DateCreated [UserProfileDateCreated]
+                                 up.Name, up.Email, up.ImageUrl [UserProfileImageUrl], up.DateCreated [UserProfileDateCreated],
+                                 c.Id [CommentId], c.Message, c.UserProfileId [CommentUserProfileId],
+                                 cup.Name [Commenter Name]
                           FROM Video v
                           INNER JOIN UserProfile up
                           ON v.UserProfileId = up.Id
-                          WHERE v.Id = @Id";
+                          LEFT JOIN Comment c
+                          ON v.Id = c.VideoId
+                          LEFT JOIN UserProfile cup
+                          ON c.UserProfileId = cup.Id
+                          WHERE v.Id = @Id
+                          ORDER BY  v.DateCreated";
 
                     DbUtils.AddParameter(cmd, "@Id", id);
 
                     var reader = cmd.ExecuteReader();
 
                     Video video = null;
-                    if (reader.Read())
+                    while (reader.Read())
                     {
-                        video = new Video()
+                        if (video == null)
                         {
-                            Id = id,
-                            Title = DbUtils.GetString(reader, "Title"),
-                            Description = DbUtils.GetString(reader, "Description"),
-                            DateCreated = DbUtils.GetDateTime(reader, "DateCreated"),
-                            Url = DbUtils.GetString(reader, "Url"),
-                            UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
-                            UserProfile = new UserProfile()
+                            video = new Video()
                             {
-                                Id = DbUtils.GetInt(reader, "UserProfileId"),
-                                Name = DbUtils.GetString(reader, "Name"),
-                                Email = DbUtils.GetString(reader, "Email"),
-                                DateCreated = DbUtils.GetDateTime(reader, "UserProfileDateCreated"),
-                                ImageUrl = DbUtils.GetString(reader, "UserProfileImageUrl"),
-                            },
-                        };
+                                Id = id,
+                                Title = DbUtils.GetString(reader, "Title"),
+                                Description = DbUtils.GetString(reader, "Description"),
+                                DateCreated = DbUtils.GetDateTime(reader, "DateCreated"),
+                                Url = DbUtils.GetString(reader, "Url"),
+                                UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
+                                UserProfile = new UserProfile()
+                                {
+                                    Id = DbUtils.GetInt(reader, "UserProfileId"),
+                                    Name = DbUtils.GetString(reader, "Name"),
+                                    Email = DbUtils.GetString(reader, "Email"),
+                                    DateCreated = DbUtils.GetDateTime(reader, "UserProfileDateCreated"),
+                                    ImageUrl = DbUtils.GetString(reader, "UserProfileImageUrl"),
+                                },
+                                Comments = new List<Comment>()
+                            };
+                        }
+
+                        if (DbUtils.IsNotDbNull(reader, "CommentId"))
+                        {
+                            video.Comments.Add(new Comment()
+                            {
+                                Id = DbUtils.GetInt(reader, "CommentId"),
+                                Message = DbUtils.GetString(reader, "Message"),
+                                VideoId = video.Id,
+                                UserProfileId = DbUtils.GetInt(reader, "CommentUserProfileId"),
+                                UserProfile = new UserProfile()
+                                {
+                                    Id = DbUtils.GetInt(reader, "CommentUserProfileId"),
+                                    Name = DbUtils.GetString(reader, "Commenter Name"),
+                                    Email = DbUtils.GetString(reader, "Email"),
+                                    ImageUrl = DbUtils.GetString(reader, "UserProfileImageUrl")
+                                }
+                            });
+                        }
                     }
 
                     reader.Close();

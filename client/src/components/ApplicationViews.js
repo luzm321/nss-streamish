@@ -2,6 +2,7 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 import VideoList from "./VideoList";
 import VideoForm from "./VideoForm";
+import VideoDetails from "./VideoDetails";
 
 const ApplicationViews = () => {
   return (
@@ -18,7 +19,9 @@ const ApplicationViews = () => {
       </Route>
 
       {/* Route below is an example of a path with a route param: /videos/:id. Using the colon, we can tell the react router that this will be some id parameter. */}
-      <Route path="/videos/:id">{/* TODO: Video Details Component */}</Route>
+      <Route path="/videos/:id">
+        <VideoDetails />
+      </Route>
     </Switch>
   );
 };

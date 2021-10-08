@@ -1,10 +1,14 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Card, CardBody } from "reactstrap";
 
 const Video = ({ video }) => {
   return (
     <Card >
       <p className="text-left px-2"><strong>Posted by:</strong> {video.userProfile.name}</p>
+      <Link to={`/videos/${video.id}`}>
+            <strong>{video.title}</strong>
+      </Link> 
       <CardBody>
         <iframe className="video"
           src={video.url}
@@ -13,19 +17,19 @@ const Video = ({ video }) => {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen />
 
-        <p><strong>Video Title:</strong> {video.title}</p>
-        <p><strong>Description:</strong> {video.description}</p>
-        <strong>Comments:</strong>
+        {/* <p><strong>Video Title:</strong> {video.title}</p> */}
+        {/* <p><strong>Description:</strong> {video.description}</p>
+        <strong>Comments:</strong> */}
         {/* {video.comments.map(comment => {
              return <p>Commented by {comment.userProfile.name}: {comment.message}</p>
         })} */}
-        {
+        {/* {
           video.comments.length !== 0 ?
             video.comments.map(comment => {
                 return <p>Commented by {comment.userProfile.name}: {comment.message}</p>}) 
             : 
                 <p>N/A</p>
-        }
+        } */}
 
 
       </CardBody>

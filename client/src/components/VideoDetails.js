@@ -22,6 +22,9 @@ const VideoDetails = () => {
         <div className="col-sm-12 col-lg-6">
           <Video video={video} />
           <ListGroup>
+            {/* {
+              console.log('video from VideoDetails', video)
+            } */}
             <p><strong>Description:</strong> {video.description}</p>
             <strong>Comments:</strong>
             {/* {video.comments.map((c) => (

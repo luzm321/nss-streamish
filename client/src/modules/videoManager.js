@@ -35,3 +35,9 @@ export const getVideo = (id) => {
     return fetch(`${baseUrl}/${id}`).then((res) => res.json());
 };
 
+export const getVideosByUser = (id) => {
+  console.log("getting user videos?")
+  return fetch(`${baseUrl}/users/${id}`)
+      .then((res) => res.json())
+};
+

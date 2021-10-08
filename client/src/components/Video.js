@@ -5,7 +5,10 @@ import { Card, CardBody } from "reactstrap";
 const Video = ({ video }) => {
   return (
     <Card >
-      <p className="text-left px-2"><strong>Posted by:</strong> {video.userProfile.name}</p>
+      {/* <p className="text-left px-2"><strong>Posted by:</strong> {video.userProfile.name}</p> */}
+      <Link to={`/users/${video?.userProfileId}`}>
+            <strong>{video.userProfile?.name}</strong>
+      </Link> 
       <Link to={`/videos/${video.id}`}>
             <strong>{video.title}</strong>
       </Link> 
